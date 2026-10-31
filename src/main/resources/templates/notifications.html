@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Notifications · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page">
+            <div class="page-hero">
+                <div><span class="eyebrow dark">YOUR UPDATES</span><h1>Notifications</h1>
+                </div>
+            </div>
+            <section class="panel">
+                <div th:if="${#lists.isEmpty(notifications)}" class="empty-state"><span>♢</span><h3>You're all caught up</h3>
+                    <p>You'll see your latest ticket notifications here.</p>
+                </div>
+                <div th:each="n:${notifications}" class="notification-row" th:classappend="${!n.read} ? 'unread' : ''">
+                    <div class="notif-icon">✉</div>
+                    <div class="notif-content"><strong th:text="${n.title}">Ticket updated</strong><p th:text="${n.message}">Description</p><small th:text="${#temporals.format(n.createdAt,'dd MMM yyyy, HH:mm')}">Date</small><a th:if="${n.ticketId!=null}" class="text-link inline-link" th:href="@{/tickets/{id}(id=${n.ticketId})}">Open ticket →</a></div>
+                    <form th:if="${!n.read}" th:action="@{/notifications/{id}/read(id=${n.id})}" method="post"><button class="btn btn-outline btn-small" type="submit">Mark read</button></form>
+                </div>
+            </section>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>

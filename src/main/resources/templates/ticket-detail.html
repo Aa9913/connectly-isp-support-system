@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Ticket details · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <script th:src="@{/js/app.js}" defer>
+        </script>
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page">
+            <div th:replace="~{fragments :: alerts}">
+            </div><a class="back-link" th:href="${me.role.name()=='TECHNICAL' or me.role.name()=='FIELD' or me.role.name()=='BILLING'} ? @{/tasks} : @{/tickets}">← Back to tickets</a>
+            <div class="page-hero ticket-heading">
+                <div><span class="eyebrow dark" th:text="${ticket.ticketNumber}">ISP-123</span><h1 th:text="${ticket.subject}">Issue subject</h1>
+                    <p class="muted">Submitted <span th:text="${#temporals.format(ticket.createdAt,'dd MMM yyyy, HH:mm')}">Date</span> by <span th:text="${ticket.customerName}">Customer</span></p>
+                </div><span class="status status-big" th:classappend="${'status-'+ticket.status.name().toLowerCase()}" th:text="${ticket.status.label}">Open</span></div>
+            <div class="detail-layout">
+                <div class="detail-main">
+                    <section class="panel">
+                        <div class="section-heading">
+                            <h2>Complaint details</h2><a class="btn btn-outline btn-small" th:if="${me.role.name()=='CUSTOMER' and ticket.status.name()=='OPEN'}" th:href="@{/tickets/{id}/edit(id=${ticket.id})}">Edit complaint</a></div>
+                        <div class="metadata-grid">
+                            <div><small>Ticket number</small><strong th:text="${ticket.ticketNumber}">ISP-001</strong></div>
+                            <div><small>Category</small><strong th:text="${ticket.category.label}">Category</strong></div>
+                            <div><small>Priority</small><strong th:text="${ticket.priority}">NORMAL</strong></div>
+                            <div><small>Assigned team member</small><strong th:text="${ticket.assignedProviderName != null ? ticket.assignedProviderName : 'Awaiting assignment'}">Pending</strong></div>
+                            <div><small>Estimated resolution</small><strong th:text="${ticket.estimatedResolutionAt != null ? #temporals.format(ticket.estimatedResolutionAt,'dd MMM yyyy, HH:mm') : 'Not specified'}">-</strong></div>
+                            <div><small>Last updated</small><strong th:text="${#temporals.format(ticket.updatedAt,'dd MMM yyyy, HH:mm')}">-</strong></div>
+                        </div><hr class="soft-divider">
+                        <div class="contact-section">
+                            <div class="section-heading">
+                                <div>
+                                    <h2>Customer contact &amp; issue location</h2>
+                                </div>
+                            </div>
+                            <div class="metadata-grid">
+                                <div><small>Customer name</small>
+                                    <strong th:text="${ticket.customerName != null and !#strings.isEmpty(ticket.customerName) ? ticket.customerName : 'Not provided'}">Customer</strong></div>
+                                <div><small>Contact number</small>
+                                    <strong th:text="${ticket.customerPhone != null and !#strings.isEmpty(ticket.customerPhone) ? ticket.customerPhone : 'Not provided'}">Phone</strong></div>
+                                <div><small>Current area / issue location</small>
+                                    <strong th:text="${ticket.customerArea != null and !#strings.isEmpty(ticket.customerArea) ? ticket.customerArea : 'Not provided'}">Area</strong></div>
+                                <div th:if="${ticket.locationDetails != null and !#strings.isEmpty(ticket.locationDetails)}">
+                                    <small>Address / nearby landmark</small>
+                                    <strong th:text="${ticket.locationDetails}">Address</strong></div>
+                            </div>
+                        </div>
+                        <hr class="soft-divider"><h3>Customer description</h3>
+                        <p class="description" th:text="${ticket.description}">Description</p>
+                        <div class="resolution-box" th:if="${ticket.status.name()=='RESOLVED'}"><strong>✓ Resolution details</strong><p th:text="${ticket.resolutionNote}">Solution provided</p><small>Resolved <span th:text="${#temporals.format(ticket.resolvedAt,'dd MMM yyyy, HH:mm')}">date</span></small></div>
+                    </section>
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Ticket activity</h2>
+                            </div>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-row" th:each="u:${history}">
+                                <div class="timeline-dot">
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-top"><strong th:text="${u.status.label}">Open</strong><small th:text="${#temporals.format(u.createdAt,'dd MMM yyyy, HH:mm')}">Date</small></div>
+                                    <p th:text="${u.message}">Note</p><small th:text="${u.actorName+' · '+u.actorRole}">Agent</small></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <aside class="detail-side">
+                    <section class="panel">
+                        <h2>Support progress</h2>
+                        <div class="progress-steps">
+                            <div class="progress-step done"><span>✓</span><div><strong>Ticket created</strong><small>Complaint received</small></div>
+                            </div>
+                            <div class="progress-step" th:classappend="${ticket.status.name()!='OPEN'} ? 'done' : ''"><span>2</span><div><strong>Level 1 review</strong><small>Initial assessment</small></div>
+                            </div>
+                            <div class="progress-step" th:classappend="${ticket.assignedProviderId != null} ? 'done' : ''"><span>3</span><div><strong>Specialist support</strong><small>When escalation is needed</small></div>
+                            </div>
+                            <div class="progress-step" th:classappend="${ticket.status.name()=='RESOLVED'} ? 'done' : ''"><span>4</span><div><strong>Resolved</strong><small>Solution recorded</small></div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="panel" th:if="${me.role.name()=='LEVEL1' and ticket.status.name()!='RESOLVED'}"><span class="eyebrow dark">LEVEL 1 ACTIONS</span><h2>Review complaint</h2>
+                        <form method="post" th:action="@{/tickets/{id}/review(id=${ticket.id})}" class="form-stack compact"><label>Review note<textarea name="note" minlength="5" maxlength="1200" rows="3" required placeholder="Describe initial findings"></textarea></label><button type="submit" class="btn btn-outline btn-wide">Mark under review</button></form><hr class="soft-divider"><h2>Forward to specialist</h2>
+                        <form method="post" th:action="@{/tickets/{id}/assign(id=${ticket.id})}" class="form-stack compact"><label>Choose support person<select name="providerId" required><option value="">Select active staff member</option><option th:each="p:${assignable}" th:value="${p.id}" th:text="${p.name+' · '+p.role.label}">Staff</option></select></label><label>Estimated resolution time<input name="eta" type="datetime-local"></label><label>Forwarding note<textarea name="note" minlength="5" maxlength="1200" rows="3" required placeholder="Reviewed and forwarded to specialist; estimated completion..."></textarea></label><button class="btn btn-primary btn-wide" type="submit">Assign ticket →</button></form><hr class="soft-divider"><h2>Resolve without escalation</h2>
+                        <form method="post" th:action="@{/tickets/{id}/resolve(id=${ticket.id})}" class="form-stack compact"><label>Solution note<textarea name="note" minlength="5" maxlength="1200" required rows="3" placeholder="Explain how this issue was fixed"></textarea></label><button class="btn btn-success btn-wide" type="submit">✓ Mark resolved</button></form>
+                    </section>
+                    <section class="panel" th:if="${(me.role.name()=='TECHNICAL' or me.role.name()=='FIELD' or me.role.name()=='BILLING') and ticket.status.name()!='RESOLVED'}"><span class="eyebrow dark">ASSIGNED SUPPORT TASK</span><h2>Update task</h2>
+                        <form th:action="@{/tickets/{id}/progress(id=${ticket.id})}" method="post" class="form-stack compact"><label>New status<select name="status" required><option value="IN_PROGRESS">In progress</option><option value="PENDING">Pending / waiting</option><option value="RESOLVED">Resolved</option></select></label><label>Progress / resolution note<textarea name="note" minlength="5" maxlength="1200" rows="5" required placeholder="What did you do? What was the solution?"></textarea></label><button class="btn btn-primary btn-wide" type="submit">Save update</button></form><small class="muted">When resolved, the customer will be notified automatically.</small></section>
+                    <section class="panel" th:if="${me.role.name()=='ADMIN'}"><span class="eyebrow dark">ADMINISTRATOR</span><h2>Delete this ticket</h2>
+                        <p class="muted">Permanently removes the ticket, activity history and related notifications. This cannot be undone.</p>
+                        <form th:action="@{/tickets/{id}/delete(id=${ticket.id})}" method="post" data-confirm="Permanently delete this ticket and all its updates?"><button class="btn btn-danger btn-wide" type="submit">Delete ticket</button></form>
+                    </section>
+                </aside>
+            </div>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>

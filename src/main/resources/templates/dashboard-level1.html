@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Level 1 Dashboard · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page">
+            <div th:replace="~{fragments :: alerts}">
+            </div>
+            <div class="page-hero">
+                <div><span class="eyebrow dark">LEVEL 1 SUPPORT</span><h1>Support overview</h1>
+                </div><a class="btn btn-primary" th:href="@{/tickets}">Manage all tickets →</a></div>
+            <div class="stat-grid">
+                <div class="stat"><span class="stat-icon blue">▣</span><small>All tickets</small><strong th:text="${total}">0</strong></div>
+                <div class="stat"><span class="stat-icon orange">◷</span><small>Active tickets</small><strong th:text="${active}">0</strong></div>
+                <div class="stat"><span class="stat-icon teal">➤</span><small>Pending assignment</small><strong th:text="${pending}">0</strong></div>
+                <div class="stat"><span class="stat-icon green">✓</span><small>Resolved</small><strong th:text="${resolved}">0</strong></div>
+            </div>
+            <section class="panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Latest incoming tickets</h2>
+                    </div><a th:href="@{/tickets}" class="text-link">All tickets →</a></div>
+                <div th:replace="~{dashboard-parts :: ticketTable}">
+                </div>
+            </section>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>

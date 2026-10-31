@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Access restricted · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page narrow-page">
+            <section class="panel center error-view">
+                <h1>Access restricted</h1>
+                <p class="muted" th:text="${message}">You cannot access this area.</p><a th:href="@{/dashboard}" class="btn btn-primary">Back to dashboard</a></section>
+        </main>
+    </body>
+</html>

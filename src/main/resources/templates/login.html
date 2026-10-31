@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Login · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+    </head>
+    <body class="auth-page">
+        <div class="auth-layout">
+            <!-- The new Connectly network banner fills the left side. -->
+            <section class="auth-feature connectly-feature"
+                 aria-label="Connectly network support banner">
+                <!-- Transparent Connectly logo over the Earth-and-network image -->
+                <div class="connectly-image-brand">
+                    <img th:src="@{/images/connectly-logo-overlay.png}"
+                     src="/images/connectly-logo-overlay.png"
+                     alt="Connectly — ISP customer support">
+                </div>
+            </section>
+            <!-- Keep the existing login form and Thymeleaf authentication. -->
+            <section class="auth-card">
+                <div class="auth-form-wrap">
+                    <a class="connectly-login-logo" th:href="@{/login}" href="/login">
+                        <img th:src="@{/images/connectly-logo.png}"
+                         src="/images/connectly-logo.png"
+                         alt="Connectly logo">
+                    </a>
+                    <span class="eyebrow dark">WELCOME BACK</span>
+                    <h2>Sign in to your account</h2>
+                    <p class="muted">Access your dashboard to manage support tickets.</p>
+                    <div class="alert alert-error" th:if="${param.error != null}">
+                    Invalid email/password or your account is disabled.
+                </div>
+                    <div class="alert alert-success" th:if="${param.logout != null}">
+                    You have signed out.
+                </div>
+                    <div class="alert alert-success" th:if="${param.registered != null}">
+                    Registration successful. Please sign in.
+                </div>
+                    <form th:action="@{/login}" action="/login" method="post" class="form-stack">
+                        <label>
+                        Email address
+                        <input type="email" name="username" placeholder="you@example.com"
+                               autocomplete="username" required autofocus>
+                        </label>
+                        <label>
+                        Password
+                        <input type="password" name="password" placeholder="Enter your password"
+                               autocomplete="current-password" required>
+                        </label>
+                        <button class="btn btn-primary btn-wide" type="submit">Sign in →</button>
+                    </form>
+                    <p class="muted center">
+                    New customer?
+                    <a th:href="@{/register}" href="/register" class="text-link">Create an account</a>
+                    </p>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

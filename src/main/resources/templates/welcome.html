@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#062b72">
+        <meta name="description" content="Connectly makes it easy to report internet issues, receive support, and follow each complaint until it is resolved.">
+        <title>Connectly | ISP Support Made Simple</title>
+        <link rel="stylesheet" th:href="@{/css/welcome.css}" href="/css/welcome.css">
+    </head>
+    <body class="welcome-page">
+        <main class="welcome-hero">
+            <div class="welcome-tint" aria-hidden="true">
+            </div>
+            <section class="welcome-content" aria-label="Welcome to Connectly">
+                <h1 class="visually-hidden">Connectly ISP Customer Support</h1>
+                <!-- Real logo image, not text baked into the background. -->
+                <img class="welcome-logo"
+                 th:src="@{/images/connectly-logo-overlay.png}"
+                 src="/images/connectly-logo-overlay.png"
+                 alt="Connectly">
+                <p class="welcome-message">
+                    <span class="welcome-message-line">Report your internet issues with ease, get the support you need,</span>
+                    <span class="welcome-message-line">and track every step of your complaint until it's resolved.</span>
+                </p>
+                <!-- Links remain functional with Spring MVC and Thymeleaf. -->
+                <a class="welcome-login" th:href="@{/login}" href="/login">
+                Log in to Connectly <span aria-hidden="true">&rarr;</span>
+                </a>
+                <a class="welcome-register" th:href="@{/register}" href="/register">
+                Create an account
+            </a>
+            </section>
+        </main>
+    </body>
+</html>

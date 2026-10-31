@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="ticketTable" class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Ticket</th><th>Subject</th><th>Category</th><th>Area</th><th>Status</th><th>Updated</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="t : ${tickets}"><td><strong th:text="${t.ticketNumber}">ISP-000001</strong></td><td class="subject-cell" th:text="${t.subject}">Internet issue</td><td th:text="${t.category.label}">Other</td><td th:text="${t.customerArea != null and !#strings.isEmpty(t.customerArea) ? t.customerArea : 'Not specified'}">Area</td><td><span class="status" th:classappend="${'status-'+t.status.name().toLowerCase()}" th:text="${t.status.label}">Open</span></td><td th:text="${#temporals.format(t.updatedAt,'dd MMM yyyy')}">29 Oct 2026</td><td><a class="text-link" th:href="@{/tickets/{id}(id=${t.id})}">View →</a></td></tr>
+                </tbody>
+            </table>
+            <div class="empty-state" th:if="${#lists.isEmpty(tickets)}"><span>◎</span><h3>No tickets yet</h3>
+                <p>There are currently no complaints in this view.</p>
+            </div>
+        </div>
+    </body>
+</html>

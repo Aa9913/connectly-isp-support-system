@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tickets · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page">
+            <div th:replace="~{fragments :: alerts}">
+            </div>
+            <div class="page-hero">
+                <div><span class="eyebrow dark">SUPPORT OPERATIONS</span><h1 th:text="${pageTitle}">Tickets</h1>
+                </div><a th:if="${me.role.name()=='CUSTOMER'}" class="btn btn-primary" th:href="@{/tickets/new}">+ New complaint</a></div>
+            <section class="panel">
+                <form class="filter-form" method="get" th:action="${me.role.name()=='TECHNICAL' or me.role.name()=='FIELD' or me.role.name()=='BILLING'} ? @{/tasks} : @{/tickets}"><label>Search tickets<input type="search" name="q" th:value="${q}" placeholder="Ticket ID, subject, customer or area..."></label><label>Ticket status<select name="status"><option value="">All statuses</option><option th:each="s:${allStatuses}" th:value="${s.name()}" th:text="${s.label}" th:selected="${statusFilter == s.name()}"></option></select></label><button class="btn btn-primary" type="submit">Apply filters</button><a class="btn btn-outline" th:href="${me.role.name()=='TECHNICAL' or me.role.name()=='FIELD' or me.role.name()=='BILLING'} ? @{/tasks} : @{/tickets}">Reset</a></form>
+                <div th:replace="~{dashboard-parts :: ticketTable}">
+                </div>
+            </section>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>

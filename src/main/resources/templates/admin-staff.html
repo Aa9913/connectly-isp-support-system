@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Staff Management · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <script th:src="@{/js/app.js}" defer>
+        </script>
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page">
+            <div th:replace="~{fragments :: alerts}">
+            </div>
+            <div class="page-hero">
+                <div><span class="eyebrow dark">SYSTEM ADMINISTRATION</span><h1>Service providers</h1>
+                </div>
+            </div>
+            <div class="admin-layout">
+                <section class="panel">
+                    <h2>Existing staff</h2>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>Name</th><th>Email</th><th>Role</th><th>Enabled</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p:${staff}"><td th:text="${p.name}">Name</td><td th:text="${p.email}">Email</td><td th:text="${p.role.label}">Level 1</td><td><span class="status" th:classappend="${p.enabled} ? 'status-resolved' : 'status-pending'" th:text="${p.enabled} ? 'Active' : 'Disabled'">Active</span></td><td><form th:action="@{/admin/staff/{id}/toggle(id=${p.id})}" method="post" data-confirm="Change this staff member's active status?"><button class="btn btn-outline btn-small" th:text="${p.enabled} ? 'Disable' : 'Enable'">Disable</button></form></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="empty-state" th:if="${#lists.isEmpty(staff)}">No staff accounts yet.</div>
+                    </div>
+                </section>
+                <section class="panel">
+                    <h2>Add staff member</h2>
+                    <div th:if="${error != null}" class="alert alert-error" th:text="${error}">
+                    </div>
+                    <form th:action="@{/admin/staff}" th:object="${staffForm}" method="post" class="form-stack compact"><label>Full name<input th:field="*{name}" maxlength="90" required><small class="input-error" th:errors="*{name}"></small></label><label>Email<input th:field="*{email}" type="email" required><small class="input-error" th:errors="*{email}"></small></label><label>Phone<input th:field="*{phone}" maxlength="25" required><small class="input-error" th:errors="*{phone}"></small></label><label>Role<select th:field="*{role}" required><option value="">Select role</option><option th:each="r:${staffRoles}" th:value="${r.name()}" th:text="${r.label}"></option></select><small class="input-error" th:errors="*{role}"></small></label><label>Initial password<input th:field="*{password}" type="password" minlength="8" maxlength="72" required><small class="input-error" th:errors="*{password}"></small></label><button class="btn btn-primary btn-wide" type="submit">Create staff account</button></form>
+                </section>
+            </div>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>

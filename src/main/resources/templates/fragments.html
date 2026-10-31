@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <header th:fragment="header" class="site-header">
+            <div class="shell nav-inner">
+                <a th:href="@{/dashboard}" class="brand site-brand-logo"><img th:src="@{/images/connectly-logo.png}" alt="Connectly"></a>
+                <nav class="nav-links" aria-label="Main navigation">
+                    <a th:href="@{/dashboard}">Dashboard</a>
+                    <a th:if="${me != null and (me.role.name() == 'CUSTOMER' or me.role.name() == 'LEVEL1' or me.role.name() == 'ADMIN')}" th:href="@{/tickets}">Tickets</a>
+                    <a th:if="${me != null and (me.role.name() == 'TECHNICAL' or me.role.name() == 'FIELD' or me.role.name() == 'BILLING')}" th:href="@{/tasks}">My tasks</a>
+                    <a th:if="${me != null and me.role.name() == 'ADMIN'}" th:href="@{/admin/staff}">Staff</a>
+                    <a th:if="${me != null and me.role.name() == 'ADMIN'}" th:href="@{/admin/customers}">Customers</a>
+                    <a th:href="@{/notifications}" class="notification-link">Notifications <span class="count-dot" th:if="${unreadCount != null and unreadCount > 0}" th:text="${unreadCount}">2</span></a>
+                </nav>
+                <div class="user-area">
+                    <div class="avatar" th:text="${me != null ? #strings.substring(me.name,0,1).toUpperCase() : 'N'}">N</div>
+                    <div class="user-label"><strong th:text="${me != null ? me.name : ''}">Name</strong><small th:text="${me != null ? me.role.label : ''}">Role</small></div>
+                    <form th:action="@{/logout}" method="post"><button class="btn btn-outline btn-small" type="submit">Logout</button></form>
+                </div>
+            </div>
+        </header>
+        <div th:fragment="alerts" class="alerts">
+            <div class="alert alert-error" th:if="${error != null}" th:text="${error}">Error</div>
+            <div class="alert alert-success" th:if="${param.created != null}">Ticket created successfully.</div>
+            <div class="alert alert-success" th:if="${param.updated != null}">Changes saved successfully.</div>
+            <div class="alert alert-success" th:if="${param.added != null}">Staff account created.</div>
+            <div class="alert alert-success" th:if="${param.deleted != null}">Ticket deleted successfully.</div>
+        </div>
+        <footer th:fragment="footer" class="footer">
+            <div class="shell">Connectly · ISP Customer Support and Connectivity Issue Resolution System · Mini Project</div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Register · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body class="auth-page">
+        <div class="register-outer">
+            <a th:href="@{/login}" class="brand register-brand-logo"><img th:src="@{/images/connectly-logo.png}" alt="Connectly"></a><div class="panel register-panel"><span class="eyebrow dark">CUSTOMER REGISTRATION</span><h1>Create a customer account</h1>
+                <p class="muted">Submit complaints, receive updates, and monitor your internet support issues.</p>
+                <div class="alert alert-error" th:if="${error != null}" th:text="${error}">Error</div>
+                <form th:action="@{/register}" th:object="${registration}" method="post" class="form-stack"><label>Full name<input th:field="*{name}" maxlength="90" required placeholder="Your full name"><small class="input-error" th:errors="*{name}"></small></label><label>Email address<input th:field="*{email}" type="email" required placeholder="you@example.com"><small class="input-error" th:errors="*{email}"></small></label><label>Phone number<input th:field="*{phone}" required maxlength="25" placeholder="0771234567"><small class="input-error" th:errors="*{phone}"></small></label><label>Password (at least 8 characters)<input th:field="*{password}" type="password" minlength="8" maxlength="72" required><small class="input-error" th:errors="*{password}"></small></label><button class="btn btn-primary btn-wide" type="submit">Create account</button></form>
+                <p class="center muted">Already registered? <a th:href="@{/login}" class="text-link">Sign in</a></p>
+            </div>
+        </div>
+    </body>
+</html>

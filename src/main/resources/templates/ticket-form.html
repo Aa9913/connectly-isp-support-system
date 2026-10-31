@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Complaint form · Connectly</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments :: header}">
+        </header>
+        <main class="shell page narrow-page">
+            <a class="back-link" th:href="@{/tickets}">← Back to tickets</a>
+            <div class="page-hero">
+                <div>
+                    <span class="eyebrow dark">CUSTOMER SUPPORT</span>
+                    <h1 th:text="${editMode} ? 'Edit complaint' : 'Create a complaint ticket'">Create complaint</h1>
+                </div>
+            </div>
+            <section class="panel form-panel">
+                <form th:action="${editMode} ? @{/tickets/{id}/edit(id=${ticket.id})} : @{/tickets}"
+              th:object="${ticketForm}" method="post" class="form-stack">
+                    <div class="form-section-title">
+                        <span class="eyebrow dark">STEP 1</span>
+                        <h2>Customer contact &amp; issue location</h2>
+                    </div>
+                    <label>Customer full name <span class="required">*</span>
+                        <input type="text" th:field="*{customerName}" maxlength="90" autocomplete="name"
+                       placeholder="Enter your full name" required>
+                        <small class="input-error" th:errors="*{customerName}"></small>
+                    </label>
+                    <label>Contact number <span class="required">*</span>
+                        <input type="tel" th:field="*{customerPhone}" minlength="7" maxlength="25"
+                       autocomplete="tel" placeholder="e.g. 0771234567" required>
+                        <small class="input-error" th:errors="*{customerPhone}"></small>
+                    </label>
+                    <label>Current living area / issue location <span class="required">*</span>
+                        <input type="text" th:field="*{customerArea}" maxlength="120"
+                       placeholder="e.g. Negombo, Colombo 05, Galle" required>
+                        <small class="input-error" th:errors="*{customerArea}"></small>
+                    </label>
+                    <label>Street, address or nearby landmark <span class="muted">(optional)</span>
+                        <input type="text" th:field="*{locationDetails}" maxlength="220"
+                       placeholder="Useful if a field technician needs to visit">
+                        <small class="input-error" th:errors="*{locationDetails}"></small>
+                    </label>
+                    <div class="form-help">Contact and location details are visible to authorized support personnel handling your ticket.
+                Do not include passwords or sensitive payment information.</div>
+                    <div class="form-section-title form-section-divider">
+                        <span class="eyebrow dark">STEP 2</span>
+                        <h2>Describe your complaint</h2>
+                    </div>
+                    <label>Issue category <span class="required">*</span>
+                        <select th:field="*{category}" required>
+                            <option value="">Choose the category</option>
+                            <option th:each="c : ${allCategories}" th:value="${c.name()}" th:text="${c.label}"></option>
+                        </select>
+                        <small class="input-error" th:errors="*{category}"></small>
+                    </label>
+                    <label>Complaint subject <span class="required">*</span>
+                        <input th:field="*{subject}" minlength="6" maxlength="130" required
+                       placeholder="e.g. Internet disconnects every night">
+                        <small class="input-error" th:errors="*{subject}"></small>
+                    </label>
+                    <label>Describe the problem <span class="required">*</span>
+                        <textarea th:field="*{description}" minlength="15" maxlength="2500" required rows="7"
+                          placeholder="When did the problem start? What devices are affected? What have you tried?"></textarea>
+                        <small class="input-error" th:errors="*{description}"></small>
+                    </label>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit"
+                        th:text="${editMode} ? 'Save changes' : 'Submit complaint'">Submit complaint</button>
+                        <a class="btn btn-outline" th:href="@{/tickets}">Cancel</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+        <footer th:replace="~{fragments :: footer}">
+        </footer>
+    </body>
+</html>
